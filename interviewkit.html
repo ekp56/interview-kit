@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Kit Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        .competency-list {
+            margin-bottom: 20px;
+        }
+        .competency-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .competency-item label {
+            flex-grow: 1;
+        }
+        .questions {
+            display: none;
+        }
+        .question-item {
+            margin-bottom: 10px;
+        }
+        .description {
+            display: none;
+            font-style: italic;
+            margin-left: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .bold-label {
+            font-weight: bold;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .directions {
+            margin-bottom: 20px;
+        }
+        .committee-members {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ffffff;
+            background-color: #ffffff;
+        }
+        .header-logo {
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
+</head>
+<body>
+    <header>
+        <div class="header-logo">
+            <img src="https://provost.upenn.edu/wp-content/themes/provost/images/svg/PennProvost_Logo.svg" alt="Company Logo">
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1>Interview Kit Builder</h1>
+        <div class="directions">
+            <p>Select/enter all fields then click "Export to PDF" to create your interview kit.</p>
+        </div>
+
+        <div class="competency-list">
+            <h2>Select Job Family:</h2>
+            <select id="positionCategory" onchange="selectPositionCategory()">
+                <option value="default">Select Position Category</option>
+                <option value="academicAffairs">Academic Affairs</option>
+                <option value="academicManagement">Academic Management</option>
+                <option value="academicSupportStaff">Academic Support Staff</option>
+                <option value="administrative">Administrative</option>
+                <option value="administrativeSupport">Administrative Support</option>
+                <option value="animalCare">Animal Care</option>
+                <option value="artsAndMedia">Arts and Media</option>
+                <option value="athleticOperations">Athletic Operations</option>
+                <option value=" businessAndFinancial">Business and Financial</option>
+                <option value="campusManagement">Campus Management</option>
+                <option value="curatorial">Curatorial</option>
+                <option value="custodians">Custodians/FRES; Drivers/Business Services</option>
+                <option value="development">Development</option>
+                <option value="facilities">Facilities</option>
+                <option value="graduateStudent">Graduate Student</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="humanResources">Human Resources</option>
+                <option value=" informationTechnology">Information Technology</option>
+                <option value="library">Library/Provost</option>
+                <option value="medicalProfessional">Medical Professional</option>
+                <option value="museum">Museum/Provost</option>
+                <option value="postdoctoral">Postdoctoral</option>
+                <option value="protectiveServices">Protective Services</option>
+                <option value="researchStaff">Research (Staff)</option>
+                <option value="studentServices">Student Services</option>
+                <option value="studentWorker">Student Worker</option>
+                <option value="temporary">Temporary</option>
+                <option value="visiting">Visiting</option>
+                <option value="workStudy">Work Study</option>
+                <!-- Add more categories as needed -->
+            </select>
+            
+            <h2>Select Competencies:</h2>
+            <div id="competencyOptions">
+                <!-- Competency checkboxes will be dynamically added based on selection -->
+            </div>
+            
+            <button onclick="generateQuestions()">Generate Interview Questions</button>
+        </div>
+
+        <div class="directions">
+            <p>Hiring Managers to have both a Hiring Committee and Advisory Committee made up of 3-4 people on each committee. Here’s some insight to what that should look like: </p>
+        </div>
+
+        <table id="additional-info-table">
+            <thead>
+                <tr>
+                    <th class="bold-label"></th>
+                    <th class="bold-label">Hiring Committee</th>
+                    <th class="bold-label">Advisory Committee/Stakeholders</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bold-label">Role</td>
+                    <td>Central to the candidate selection process.</td>
+                    <td>Comprises individuals who will closely interact with the new hire. </td>
+                </tr>
+                <tr>
+                    <td class="bold-label">Focus</td>
+                    <td>Creating a positive experience for all candidates and ensuring competency-based assessments. </td>
+                    <td>Contributing insights and feedback based on specific focus areas. </td>
+                </tr>
+                <tr>
+                    <td class="bold-label">Responsibilities</td>
+                    <td>Recommends finalists, with the Hiring Manager making the final decision, backed by thorough rationale.</td>
+                    <td>While their input is valuable, decision-making rests with the Hiring Committee to maintain process integrity and clarity.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="directions">
+            <p>Competencies: These are a combination of critical skills necessary for a candidate to be successful in the role. Interviews are structured around these competencies to collect evidence that supports (or not) the likelihood of success.</p>
+            <ul>
+                <li><strong>Behavioral Competencies:</strong> These are behaviors that are critical for success in the role. They are HOW someone will operate in the role. Ex. communication, collaboration, customer focus.</li>
+                <li><strong>Functional Competencies:</strong> These are the functional and/or technical ("hard") skills. These are WHAT a candidate will do in the role. Ex. business development, accounting.</li>
+            </ul>
+        </div>
+        <div class="form-container">
+            <label for="positionTitle">Position Title:</label>
+            <input type="text" id="positionTitle" name="positionTitle" style="width: 50%;">
+        
+            <label for="jobNumber">Job Number:</label>
+            <input type="text" id="jobNumber" name="jobNumber" style="width: 50%;">
+        
+            <label for="jobLink">Job Link:</label>
+            <input type="text" id="jobLink" name="jobLink" style="width: 50%;">
+        </div>
+        
+        <div class="questions" id="questions">
+            <h2>Selected Competencies:</h2>
+            <table id="competency-table">
+                <thead>
+                    <tr>
+                        <th>Competency</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        
+            <h2>Hiring Committee Members:</h2>
+            <div class="committee-members" id="committee-members">
+                <table id="committee-table">
+                    <thead>
+                        <tr>
+                            <th>Interviewer</th>
+                            <th>Competency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="committee-table-body">
+                    </tbody>
+                </table>
+            </div>
+        
+            <form id="committeeForm">
+                <div>
+                    <label for="committeeName">Interviewer:</label>
+                    <input type="text" id="committeeName" name="committeeName">
+                </div>
+                <div>
+                    <label for="committeeCompetency">Competency:</label>
+                    <select id="committeeCompetency" name="committeeCompetency"multiple>
+                        <!-- Options will be added dynamically based on selected competencies -->
+                    </select>
+                </div>
+                <button type="button" onclick="addCommitteeMember()">Add Interviewer</button>
+            </form>
+            <button type="button" onclick="resetCommitteeMembers()">Reset</button>
+            <h2>Interview Questions:</h2>
+            <div id="question-list"></div>
+        </div>
+
+        <button onclick="exportToPDF()">Export to PDF</button>
+    </div>
+    
+    <script>
+        const competencyOptions = {
+            academicAffairs: ["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            academicManagement:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            academicSupportStaff:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            administrative:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            administrativeSupport:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            animalCare:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            artsAndMedia:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            athleticOperations:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            businessAndFinancial:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            campusManagement:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            curatorial:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            custodians:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            development:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            facilities:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            graduateStudent:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            healthcare: ["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            humanResources:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            informationTechnology:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            library:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            medicalProfessional:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            museum:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            postdoctoral:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            protectiveServices:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            researchStaff:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            studentServices:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            studentWorker:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            temporary:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            visiting:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            workStudy:["actionOriented","attractsTopTalent","balanceStakeholders","beingResilient","buildsEffectiveTeams","buildsNetworks","businessInsight","collaborates","communicatesEffectively",
+            "courage","cultivatesInnovation","customerFocus","decisionQuality","demonstratesSelfAwareness","developsTalent","directsWork","drivesEngagement","drivesResults","drivesVisionAndPurpose",
+            "ensuresAccountability","financialAcumen","globalPerspective","instillsTrust","interpersonalSavvy","managesAmbiguity","managesComplexity","managesConflict","nimbleLearning","optimizesWorkProcesses",
+            "organizationalSavvy","persuades","plansAndAligns","resourcefulness","selfDevelopment","situationalAdaptability","strategicMindset","techSavvy","valuesDifferences"],
+            // Add more categories and their associated competencies as needed
+        };
+        const descriptions = {
+            actionOriented: "Taking on new opportunities and tough challenges with a sense of urgency, high energy, and enthusiasm.",
+            attractsTopTalent: "Attracting and selecting the best talent to meet current and future business needs.",
+            balanceStakeholders: "Anticipating and balancing the needs of multiple stakeholders.",
+            beingResilient: "Rebounding from setbacks and adversity when facing difficult situations.",
+            buildsEffectiveTeams: "Building strong-identity teams that apply their diverse skills and perspectives to achieve common goals.",
+            buildsNetworks: "Effectively building formal and informal relationship networks inside and outside the organization.",
+            businessInsight: "Applying knowledge of business and the marketplace to advance the organization’s goals.",
+            collaborates: "Building partnerships and working collaboratively with others to meet shared objectives.",
+            communicatesEffectively: "Developing and delivering multi-mode communications that convey a clear understanding of the unique needs of different audiences.",
+            courage: "Stepping up to address difficult issues, saying what needs to be said.",
+            cultivatesInnovation: "Creating new and better ways for the organization to be successful.",
+            customerFocus: "Building strong customer relationships and delivering customer-centric solutions.",
+            decisionQuality: "Making good and timely decisions that keep the organization moving forward.",
+            demonstratesSelfAwareness: "Using a combination of feedback and reflection to gain productive insight into personal strengths and weaknesses.",
+            developsTalent: "Developing people both to meet their career goals and the organization’s goals.",
+            directsWork: "Providing direction, delegating, and removing obstacles to get work done",
+            drivesEngagement: "Creating a climate where people are motivated to do their best to help the organization achieve its objectives.",
+            drivesResults: "Consistently achieving results, even under tough circumstances.",
+            drivesVisionAndPurpose: "Painting a compelling picture of the vision and strategy that motivates others to action.",
+            ensuresAccountability: "Holding self and others accountable to meet commitments.",
+            financialAcumen: "Interpreting and applying understanding of key financial indicators to make better business decisions.",
+            globalPerspective: "Taking a broad view when approaching issues, using a global lens.",
+            instillsTrust: "Gaining the confidence and trust of others through honesty, integrity, and authenticity.",
+            interpersonalSavvy: "Relating openly and comfortably with diverse groups of people.",
+            managesAmbiguity: "Operating Effectively, even when things are not certain, or the way forward is not clear. ",
+            managesComplexity: "Making sense of complex, high quantity, and sometimes contradictory information to effectively solve problems.",
+            managesConflict: "Handling conflict situations effectively, with a minimum of noise.",
+            nimbleLearning: "Actively learning through experimentation when tackling new problems, using both successes and failures as learning fodder.",
+            optimizesWorkProcesses: "Knowing the most effective and efficient processes to get things done, with a focus on continuous improvement.",
+            organizationalSavvy: "Maneuvering comfortably through complex policy, process, and people related organizational dynamics.",
+            persuades: "Using compelling arguments to gain the support and commitment of others.",
+            plansAndAligns: "Planning and prioritizing work to meet commitments aligned with organizational goals.",
+            resourcefulness: "Securing and deploying resources effectively and efficiently.",
+            selfDevelopment: "Actively seeking new ways to grow and be challenged using both formal and informal development channels.",
+            situationalAdaptability: "Adapting approach and demeanor in real time to match the shifting demands of different situations.",
+            strategicMindset: "Seeing ahead to future possibilities and translating them into breakthrough strategies.",
+            techSavvy: "Anticipating and adopting innovations in business-building digital and technology applications.",
+            valuesDifferences: "Recognizing the value that different perspectives and cultures bring to an organization.",
+             
+        };
+
+        const questions = {
+            actionOriented: [
+                "Describe a situation where you took the lead without being asked. What was the project or task, and how did you ensure its success?",
+                "Tell me about a project where you went above and beyond what was required. What motivated you to take those extra steps, and how did it impact the outcome?",
+                "Tell me about a time when you identified a problem before it became a major issue. What steps did you take to address it, and what was the outcome?",
+                "Tell me about a time when you had to meet a tight deadline. How did you ensure a timely completion?",
+                "Give me an example of a goal you set for yourself and the steps you took to achieve it. How did you overcome any obstacles you faced?"
+            ],
+            attractsTopTalent: [
+                "Describe a situation where you successfully recruited a high-performing team member. What strategies did you use to attract them to your team?",
+                "Can you share an example of a time when you identified and approached a passive candidate for a key role? How did you make your pitch compelling, and what was the outcome?",
+                "Describe a time when you had to collaborate with hiring managers or executives to define the profile of an ideal candidate. How did you ensure alignment, and what impact did it have on the recruitment process?",
+                "Tell me about a time when you supported building a diverse talented team. What actions did you take to ensure a diverse pool of candidates?",
+                "Tell me about a time when you had to compete with other organizations for top talent. What strategies did you use to make your organization stand out?"
+            ],
+            balanceStakeholders: [
+                "Describe a situation where you had to manage conflicting priorities and interests among different stakeholders. How did you approach the challenge, and what actions did you take?",
+                "Tell me about a time when you had to resolve a disagreement between two key stakeholders. How did you facilitate a resolution, and what steps did you take to rebuild positive relationships?",
+                "Tell me about a time when you had to deliver news that was not well-received by a group of stakeholders. How did you handle the communication?",
+                "Tell me about a time when you successfully anticipated the needs of a stakeholder. How did you anticipate their need and what solution did you deliver?",
+                "Tell me about a time when you received pushback from a stakeholder regarding a certain project or decision. How did you respond?"
+            ],
+            beingResilient: [
+                "Tell me about a time when you faced a setback or failure at work. How did you handle it, and what steps did you take to recover and move forward?",
+                "Discuss a project that didn't go as planned. How did you react to unexpected challenges?",
+                "Describe a situation where you had to adapt quickly to a significant change in your work environment or project. How did you approach the change?",
+                "Discuss a time when you received constructive criticism or feedback. How did you respond?",
+                "Tell me about a time when you had to deal with ambiguity or uncertainty in your role. How did you handle this situation?"
+            ],
+            buildsEffectiveTeams: [
+                "Describe a situation where you had to bring together a diverse group of individuals to work on a project. How did you go about building your team, and what was the outcome?",
+                "Discuss a successful team project you led. What strategies did you use to ensure collaboration and effective communication among team members?",
+                "Describe a successful team-building activity or initiative you implemented. How did it impact team morale, communication, or productivity?",
+                "Tell me about a time when you had to resolve a conflict within your team. How did you address the issue?",
+                "Tell me about a time when you had to integrate a new team member into an existing team. How did you ensure a smooth transition?"
+            ],   
+            buildsNetworks: [
+                "Describe a situation where you successfully expanded your professional network. What strategies did you use to connect with new contacts, and how did it benefit your work?",
+                "Discuss an instance where you played a key role in creating or participating in a professional community. How did you contribute to the community?",
+                "Tell me about a situation where you had to leverage your professional network to solve a problem. What resources or insights did you gain through your connections, and how did it contribute to the resolution?",
+                "Describe a networking event you attended. What was your approach to networking at the event?",
+                "Tell me about a time when you had to represent your organization at a networking event. How did you prepare for the event and what did you do to leave a positive impression?"
+            ],
+            businessInsight: [
+                "Describe a situation where you demonstrated a keen understanding of your industry's competitive landscape. How did this insight inform a decision?",
+                "Tell me about a time when your awareness of market trends and industry changes allowed you to identify a new business opportunity. What steps did you take?",
+                "Discuss a project where you had to assess the potential risks and opportunities associated with a business decision. How did you analyze the situation, and what was the outcome of your decision?",
+                "Tell me about a time when your understanding of the regulatory environment impacted a business decision. How did you navigate the regulation?",
+                "Tell me about a time when your understanding of customer preferences influenced a product or service improvement. How did you incorporate their preference into the improvement?"
+            ],
+            collaborates: [
+                "Describe a project where you had to collaborate with team members from different departments. What strategies did you use to ensure a successful outcome?",
+                "Describe a situation where you had a disagreement with a coworker about a project. What did you do to resolve the disagreement?",
+                "Describe a time you had to give feedback to a coworker. How did you approach giving them feedback?",
+                "Tell me about a time when you successfully fostered a collaborate team environment. What did you do to promote collaboration on the team?",
+                "Tell me about a time when you had to collaborate with both in-person and remote colleagues. What challenges did you face and how did you ensure effective collaboration?"
+            ],
+            communicatesEffectively: [
+                "Describe a situation where you had to explain a complex topic to someone who had little knowledge of the subject. How did you ensure they understood the information?",
+                "Tell me about a time when you had to deliver difficult or challenging feedback to a team member. How did you approach the conversation?",
+                "Describe a situation where you had to give a presentation. How did you prepare and deliver your presentation in a way that effectively communicated your message?",
+                "Tell me about a time when you had to communicate a process or procedure change to your team. How did you communicate the information effectively?",
+                "Tell me about a project that involved working with individuals from a different cultural background from your own. What communication challenges did you face and how did you overcome them?"
+            ],
+            courage: [
+                "Discuss an instance where you had to challenge a decision made by your supervisor or higher-ups. How did you communicate your concerns?",
+                "Tell me about a time when you had to challenge the status quo in your organization. How did you initiate the change?",
+                "Tell me about a time when you took a principled stand on an issue, even when it was not the popular opinion. How did you articulate your position, and what were the results?",
+                "Tell me about a time when you had to confront a colleague about their behavior. What approach did you take?",
+                "Tell me about a time when you recognized a potential risk or flaw in a plan. How did you address your concern?"
+            ],
+            cultivatesInnovation: [                
+                "Creating new and better ways for the organization to be successful.",
+                "Discuss a project where you introduced a new process that significantly improved efficiency or effectiveness. What steps did you take in introducing the new process? What challenges did you face?",
+                "Discuss an instance where you introduced a new technology or tool to enhance productivity or capabilities. How did you ensure a smooth adoption process?" ,  
+                "Tell me about a time when you experimented or tested out a new process. What did you learn from the experience and what was the outcome?",
+                "Tell me about a time when you successfully implemented a change based on feedback you received. What was your solution to address the feedback?"                            
+            ],
+            customerFocus: [                
+                "Describe a situation where you went above and beyond to meet a customer's needs or resolve a problem. What steps did you take, and what was the outcome?",
+                "Tell me about a time when you had to deal with a challenging customer situation. How did you handle it?",
+                "Describe a project where you were responsible for improving the overall customer experience. What actions did you take and what was the outcome?" ,  
+                "Tell me about a time when you had to resolve a recurring customer issue. How did you identify the root cause of the issue? ",
+                "Tell me about a time when you had to handle multiple customer requests at the same time. What did you do to prioritize the requests and ensure customer satisfaction? "                            
+            ],
+            decisionQuality: [                
+                "Describe a challenging decision you had to make. What factors did you consider, and how did you ensure it was the right decision?",
+                "Discuss a situation where you had to make a decision without having all the necessary information. How did you handle the uncertainty? ",
+                "Tell me about a time when you had to make a quick decision under pressure. How did you gather information and assess the situation to ensure the decision was sound?" ,  
+                "Tell me about a time when you had to reverse a decision. What led to the reversal and how did you approach this change?",
+                "Can you share an example of a project where you had to choose between multiple options. How did you evaluate your options and what option did you choose?"                            
+            ],
+            demonstratesSelfAwareness: [                
+                "Describe a situation where you received constructive feedback from a colleague. How did you react to the feedback?",
+                "Tell me about a time when you faced a challenge and, upon reflection, realized that your own behavior contributed to the issue. How did you acknowledge and rectify the situation?",
+                "Tell me about a time when you set personal development goals. How did you identify areas for improvement, and what steps did you take to work on those areas?tion3" ,  
+                "Tell me about a time when you realized a particular task or responsibility was better suited for a colleague. How did you acknowledge this and what was the outcome?",
+                "Tell me about a time when you had a conflict or disagreement with a co-worker.  What did you do to resolve the issue?"                            
+            ],
+            developsTalent: [                
+                "Discuss a situation where you provided constructive feedback to a team member. How did you approach the conversation, and what steps did you take to ensure their growth and improvement?",
+                "Describe a project where you actively mentored or coached a team member? What strategies did you employ to support their development?",
+                "Discuss an instance where you successfully facilitated knowledge sharing and skill transfer within your team. What actions did you take and what was the outcome?" ,  
+                "Discuss a project where you had to assign tasks based on team members strengths and development needs. What was your approach and what was the outcome?",
+                "Tell me about a time when you implemented a training program to enhance the skills of your team. How was the program received and what was the outcome?"                            
+            ],
+            directsWork: [                
+                "Describe a project or task where you had to provide clear direction to your team. How did you communicate expectations, and what steps did you take to ensure the work was completed successfully?",
+                "Tell me about a time when you had to delegate a challenging task to a team member. How did you select the individual for the task, and what support did you provide to ensure their success?",
+                "Discuss a situation where you had to remove obstacles or barriers hindering your team's progress. What actions did you take, and how did it impact the team's ability to meet their goals?" ,  
+                "Tell me about a time when you identified a team member struggling with their workload. How did you address the issue?",
+                "Discuss a time when you had to make tough decisions about resource allocation to support your team’s work. What did you do and how did you communicate your decisions?"                            
+            ],
+            drivesEngagement: [                
+                "Describe a specific instance where you implemented strategies to enhance employee engagement within your team. What initiatives did you undertake, and what was the impact?",
+                "Tell me about a time when you noticed a decrease in team morale. How did you identify the issue, and what actions did you take?",
+                "Tell me about a time when you recognized and rewarded individual or team achievements. How did you recognize the achievement and what was the outcome?" ,  
+                "Tell me about a time when you actively promoted work-life balance within your team. What was your approach to promoting well-being?",
+                "Tell me about a time when you had to balance the need for results while maintaining a positive work environment. How did you ensure high performance while also keeping team members motivated and not burnt out?"                            
+            ],
+            drivesResults: [                
+                "Describe a specific project or initiative where you were responsible for achieving a challenging goal. What strategies did you use to ensure successful outcomes?",
+                "Tell me about a time when you had to manage a project with limited resources. How did you prioritize tasks and allocate resources to ensure the project's success?",
+                "Describe a project where you set ambitious performance targets for your team. How did you communicate these expectations, and what strategies did you use to motivate your team to exceed the goals?" ,  
+                "Tell me about a time when you led a turnaround effort for a project that was not on track to meet its objectives. What did you do to get the project back on track?",
+                "Tell me about a time when you were tasked with measuring the results of a specific project. What did you do to measure the results and evaluate the success of the project?"                            
+            ],
+            drivesVisionAndPurpose: [                
+                "Describe a specific instance where you successfully communicated a compelling vision or strategy to your team. How did you articulate the vision?",
+                "Tell me about a time when you had to align a team with a new organizational vision or strategy. What steps did you take?",
+                "Discuss an instance where you played a key role in developing a strategic plan for your team or organization. What did you do to ensure the plan was understood and embraced?" ,  
+                "Tell me about a time when you faced resistance from your team regarding a new strategy. How did you address their concerns?",
+                "Tell me about a time when you successfully reenergized an unmotivated team. What actions did you take?"                            
+            ],
+            ensuresAccountability: [                
+                "Describe a situation where you had to hold a team member accountable for not meeting their commitments. How did you address the issue?",
+                "Tell me about a time when you had to hold yourself accountable for a mistake or oversight. How did you acknowledge the error, and what steps did you take?",
+                "Tell me about a time when you implemented a system or process to track and measure progress on a project. What impact did it have on the project's success?" ,  
+                "Tell me about a time when you had to set clear expectations for a project or task. How did you communicate these expectations and ensure they were met?",
+                "Tell me about a project where you or your team faced a challenge in meeting a deadline. How did you address the challenge?"                            
+            ],
+            financialAcumen: [                
+                "Discuss a project where you had to create and manage a budget. How did you determine budget priorities, and did you monitor and control expenses?",
+                "Describe a situation where you had to make a business decision that had significant financial implications. What was the decision and what factors did you take into consideration?",
+                "Tell me about a time when you had to assess the financial viability of a new business initiative or project. What actions did you take and what was the outcome?" ,  
+                "Tell me about a time when you identified a cost-saving opportunity for the organization. How did you communicate this finding to your team and what actions did you take?",
+                "Tell me about a time when you identified a financial risk within a project or organization. What did you identify and mitigate such risks?"                            
+            ],
+            globalPerspective: [                
+                "Discuss a situation where you had to work with a cross-cultural team to achieve a common goal. How did you navigate cultural differences?",
+                "Tell me about a time when you successfully adapted a strategy or project to meet the needs of a global audience.  How did you research and understand the needs of your diverse audience?",
+                "Tell me about a time when you successfully managed a project with team members located in different time zones. How did you coordinate efforts to ensure a successful outcome?" ,  
+                "Tell me about a time when you had to address a cultural misunderstanding within your team. How did you recognize and resolve the issue?",
+                "Describe a project in which you had to navigate the legal and regulatory environment of a foreign country. How did you ensure compliance?"                            
+            ],
+            instillsTrust: [                
+                "Tell me about a time when you were entrusted with confidential information. How did you handle this information to ensure others felt confident in your ability to maintain confidentiality?",
+                "Describe a project where you had to establish trust with a new team or group of colleagues. What specific actions did you take to build rapport?",
+                "Discuss a project where you had to rebuild trust within a team that had experienced a breakdown. What actions did you take to repair trust, and what was the outcome?" ,  
+                "Tell me about a time when you had to balance the need for transparency with confidentiality. How did you communicate openly without violating anyone’s privacy?",
+                "Tell me about a time when you felt pressured to compromise on your values. How did you navigate the situation?"                            
+            ],
+            interpersonalSavvy: [                
+                "Tell me about the most challenging person you have ever had to work with. What was most challenging and how did you overcome the challenge?",
+                "Describe a situation where you had to work with a team composed of individuals with diverse backgrounds and personalities. How did you approach building relationships within the team?",
+                "Discuss a situation where you had to deliver feedback that was potentially sensitive or challenging. How did you ensure the feedback was received positively?" ,  
+                "Tell me about a time when you had to navigate a conflict between two team members. How did you address the situation?",
+                "Tell me about a time when you had to gain the trust and cooperation of someone who was initially resistant. How did you approach building the relationship?"                            
+            ],
+            managesAmbiguity: [                
+                "Can you tell me about a time when you had to make a decision without having all the information you needed? What information was missing and how did you go about making a sound decision? ",
+                "Describe a project or task you worked on where the goals or expectations were not clearly defined. How did you approach the situation?",
+                "Tell me about a time when you encountered unexpected challenges that required you to adjust your approach. What impact did your adaptability have on the project's outcome?" ,  
+                "Tell me about a time when you led a team through a period of significant change. How did you keep the team motivated despite the ambiguity?",
+                "Tell me about a time when you started a new position or took on a new role and it was unclear what your responsibilities were. What did you do to gain more clarity?"                            
+            ],
+            managesComplexity: [                
+                "Describe a project or task where you had to deal with a large amount of complex information. How did you approach organizing and making sense of the information to achieve your goals?",
+                "Discuss a situation where you were required to manage multiple, competing priorities simultaneously. How did you prioritize tasks and allocate resources to handle the complexity effectively?",
+                "Tell me about a time when you had to analyze contradictory information to make a critical decision. How did you reconcile conflicting information?" ,  
+                "Tell me about a time when you handled a large volume of data, information, or requests. How did you stay organized?",
+                "Tell me about a time when you had to communicate complex information to a non-technical audience. How did you simplify the information to ensure understanding?"                            
+            ],
+            managesConflict: [                
+                "Tell me about a time when you had a disagreement with a colleague. How did you handle the disagreement?",
+                "Describe a situation where you encountered conflict within your team. How did you address the issue?",
+                "Tell me about a time when you had to mediate a disagreement between team members. How did you approach the conversation?" ,  
+                "Discuss a situation where you had to deliver difficult news or feedback to a team member. How did you approach the conversation? ",
+                "Describe a project where conflicting priorities among team members threatened the project's success. How did you manage the conflicting interests?"                            
+            ],
+            nimbleLearning: [                
+                "Tell me about a project where you had to acquire new skills or knowledge quickly. How did you go about learning the new skill?",
+                "Tell me about a time when you learned from a failure or mistake. What was the mistake and what did you learn?",
+                "Tell me about a situation where you took on a new responsibility outside your comfort zone. How did you approach the learning curve?" ,  
+                "Tell me about a time you worked with a new technology or tool. How did you learn to use it?",
+                "Tell me about a time when you experimented or trialed a new process at work. What was the outcome?"                            
+            ],
+            optimizesWorkProcesses: [                
+                "Describe a situation where you identified inefficiencies in a work process. How did you go about identifying the inefficiency and what improvements did you implement?",
+                "Tell me about a project where you had to streamline a complex workflow. How did you identify bottlenecks and what changes did you make?",
+                "Describe a time when you implemented a new tool or technology to improve work processes. How did you successfully implement the new tool or technology?" ,  
+                "Tell me about a time when you led a team in optimizing a recurring process. What steps did you take to improve the repetitive process?",
+                "Tell me about a time when you successfully implemented a change to a system or process that has been around for a long time. How did you navigate any resistance to changing the traditional system or process?"                            
+            ],
+            organizationalSavvy: [                
+                "Describe a situation where you successfully navigated complex organizational politics. What was the situation and what was the outcome?",
+                "Tell me about a project where you had to work across different departments with varying priorities. How did you align the interests and ensure collaboration in achieving the project's objectives?",
+                "Discuss a project where you had to balance the need to follow organizational processes with the urgency of meeting tight deadlines. How did you navigate these dynamics to ensure both compliance and efficiency?" ,  
+                "Tell me about a time when you had to introduce a change that faced resistance from within your organization. How did you handle the situation?",
+                "Tell me about a time when there was a restructuring or change in leadership at your organization. How did you adapt to the changes? "                            
+            ],
+            persuades: [                
+                "Describe a situation where you had to persuade a team or individual to adopt a new idea or approach. What strategies did you use to gain their support?",
+                "Describe a scenario where you had to present a business case to senior leadership to gain approval for a new initiative. How did you present your case?",
+                "Describe a project where you needed to convince your team to adopt a new technology or process. How did you gain their buy-in?" ,  
+                "Tell me about a time when you persuaded a customer to choose your product or service over a competitor. How did you make the sale?",
+                "Tell me about a time when you successfully pitched an idea to your team. How did you communicate your idea effectively?"                            
+            ],
+            plansAndAligns: [                
+                "Describe a project you managed from initiation to completion. How did you plan and prioritize tasks to ensure the project’s success?",
+                "Tell me about a time when you set an ambitious goal for your team or department. How did you plan the necessary steps to achieve the goal?",
+                "Describe a project where you had to develop a strategic plan to address a specific organizational challenge. How did you align the plan with long-term organizational goals?" ,  
+                "Tell me about a time when you faced competing priorities at work. What did you do to ensure the work was completed?",
+                "Tell me about a time when you had to delegate tasks to your team members. How did you manage distributing the tasks?"                            
+            ],
+            resourcefulness: [                
+                "Describe a project where you had limited resources. How did ensure the project’s success despite the constraints?",
+                "Discuss an instance where you had to ask a stakeholder for resources needed for a project. How did you approach your request to secure the necessary support?",
+                "Describe a situation where your team faced a sudden increase in workload. How did you assess resource needs and redistribute tasks to ensure the team could handle the increased demand?" ,  
+                "Tell me about a time when a specific skill set was needed for a project, but the expertise wasn’t readily available within your team. How did you address the situation?",
+                "Tell me about a time when you were involved with a project that had a tight budget. How did you manage the project with such limited funds?"                            
+            ],
+            selfDevelopment: [                
+                "Describe a specific skill or competency you identified for personal development. How did you go about developing that skill, and what impact did it have on your performance?",
+                "Tell me about a time when you took the initiative to take on a new responsibility outside of your typical work. How did you approach learning this new responsibility?",
+                "Discuss an instance where you sought feedback on your performance. How did you use that feedback to improve your performance?" ,  
+                "Tell me about a time when you sought out mentorship or guidance from a more experienced colleague. What did you gain from their expertise?",
+                "Tell me about a time when you actively sought out or participated in training to improve your professional skills. How have you applied what you learned? "                            
+            ],
+            situationalAdaptability: [                
+                "Describe a situation where you had to adjust your communication style to effectively connect with individuals who had different communication preferences. How did you adapt?",
+                "Tell me about a project where unexpected challenges arose. How did you adapt your approach to address the challenges?",
+                "Tell me about a time when you had to present information to different audiences with varying levels of expertise. How did you tailor your presentation to meet the diverse needs of the audience members?" ,  
+                "Tell me about a time when you were required to switch tasks abruptly due to a change in priorities. How did you handle the abrupt change?",
+                "Describe a project where you had to lead a team through a period of uncertainty. How did you provide stability in a time of uncertainty?"                            
+            ],
+            strategicMindset: [                
+                "Tell me about a project where you played a key role in developing a long-term strategy. How did you anticipate future trends and incorporate them into the strategic planning process?",
+                "Discuss a project where you anticipated potential risks or obstacles and developed a contingency plan.  What was your approach?",
+                "Describe a project where you had to balance short-term goals with long-term strategic objectives. How did you ensure that day-to-day tasks contributed to the larger vision and goals of the organization?" ,  
+                "Describe a situation where you identified a potential opportunity or challenge before it became apparent to others. How did you leverage this foresight?",
+                "Tell me about a time when you conducted a comprehensive analysis of a certain topic to inform in a strategic decision. What was the analysis of and how did it impact your decision making?"                            
+            ],
+            techSavvy: [                
+                "Tell me about a time when you had to quickly learn and implement a new technology or software. How did you approach the learning process?",
+                "Discuss an instance where you played a key role in the integration of a new digital tool or platform within your team or organization. How did you ensure a smooth transition?",
+                "Describe a time when you had to troubleshoot and resolve a technical issue under tight deadlines. What measures did you take to ensure a quick resolution?" ,  
+                "Tell me about a time when you identified a technical innovation that could enhance efficiency on your team. How did you approach using such technology?",
+                "Tell me about a time when you had to educate non-tech savvy team members to the benefits of using new technology. How did you approach these conversations?"                            
+            ],
+            valuesDifferences: [                
+                "Tell me about a time when you worked with someone who had drastically different ideas or methods from your own. How did you overcome these differences to achieve a successful outcome?",
+                "Describe a project where you actively sought to diversify the team's perspectives by bringing in individuals with different skills or experiences. How did this diversity contribute to the project's success?",
+                "Describe a project where you had to manage a team that included both experienced and junior members. How did you value and incorporate the perspectives of team members at different career levels?" ,  
+                "Tell me about a time when you encountered cultural differences within your team. How did you handle the situation?",
+                "Discuss an instance where you recognized bias within your team. How did you address it?"                            
+            ],
+        };
+
+        function formatCompetencyName(name) {
+            return name.replace(/([a-z])([A-Z])/g, '$1 $2');
+        }
+
+        function selectPositionCategory() {
+            const positionCategory = document.getElementById('positionCategory').value;
+            const competencyOptionsContainer = document.getElementById('competencyOptions');
+            competencyOptionsContainer.innerHTML = ''; // Clear previous options
+            
+            if (positionCategory !== 'default') {
+                competencyOptions[positionCategory].forEach(competency => {
+                    const formattedCompetency = formatCompetencyName(competency);
+                    const competencyItem = document.createElement('div');
+                    competencyItem.className = 'competency-item';
+                    competencyItem.innerHTML = `
+                        <label><input type="checkbox" value="${competency}"> ${formattedCompetency.charAt(0).toUpperCase() + formattedCompetency.slice(1)}</label>
+                        <span class="dropdown-arrow" onclick="toggleDescription('${competency}')"></span>
+                        <div id="description-${competency}" class="description">
+                            ${descriptions[competency]}
+                        </div>
+                    `;
+                    competencyOptionsContainer.appendChild(competencyItem);
+                });
+            }
+        }
+
+        function toggleDescription(competency) {
+            const description = document.getElementById('description-' + competency);
+            const arrow = document.querySelector('.dropdown-arrow-' + competency);
+            if (description.style.display === 'none') {
+                description.style.display = 'block';
+                arrow.classList.add('active');
+            } else {
+                description.style.display = 'none';
+                arrow.classList.remove('active');
+            }
+        }
+
+        function generateQuestions() {
+    const selectedCompetencies = document.querySelectorAll('.competency-list input:checked');
+    const competencyTableBody = document.getElementById('competency-table').getElementsByTagName('tbody')[0];
+    const questionList = document.getElementById('question-list');
+    const committeeCompetencySelect = document.getElementById('committeeCompetency');
+    
+    competencyTableBody.innerHTML = '';
+    questionList.innerHTML = '';
+    committeeCompetencySelect.innerHTML = '';
+
+    selectedCompetencies.forEach(competency => {
+        const competencyValue = competency.value;
+        const formattedCompetency = formatCompetencyName(competencyValue);
+        const competencyDescription = descriptions[competencyValue];
+        
+        // Add competency to table
+        const row = document.createElement('tr');
+        const cell1 = document.createElement('td');
+        const cell2 = document.createElement('td');
+        cell1.textContent = formattedCompetency.charAt(0).toUpperCase() + formattedCompetency.slice(1);
+        cell2.textContent = competencyDescription;
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        competencyTableBody.appendChild(row);
+
+        // Add competency header to question list
+        const competencyHeader = document.createElement('h3');
+        competencyHeader.textContent = formattedCompetency.charAt(0).toUpperCase() + formattedCompetency.slice(1);
+        questionList.appendChild(competencyHeader);
+
+        // List all questions for the selected competency
+        const allQuestions = questions[competencyValue];
+        
+        // Add questions under competency header
+        allQuestions.forEach((question, index) => {
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            questionItem.innerHTML = `
+                <span class="competency-label">${question}</span>
+                <button type="button" onclick="editQuestion('${competencyValue}', ${index})">Edit</button>
+                <button type="button" onclick="deleteQuestion('${competencyValue}', ${index})">Delete</button>
+            `;
+            questionList.appendChild(questionItem);
+        });
+
+        // Add custom question textarea and button under each competency
+        const addQuestionTextarea = document.createElement('textarea');
+        addQuestionTextarea.placeholder = `Add new question...`;
+        const addQuestionButton = document.createElement('button');
+        addQuestionButton.textContent = 'Add Question';
+        addQuestionButton.onclick = () => addNewQuestion(competencyValue, addQuestionTextarea);
+        questionList.appendChild(addQuestionTextarea);
+        questionList.appendChild(addQuestionButton);
+
+        // Add competency option for committee form
+        const option = document.createElement('option');
+        option.value = competencyValue;
+        option.textContent = formattedCompetency.charAt(0).toUpperCase() + formattedCompetency.slice(1);
+        committeeCompetencySelect.appendChild(option);
+    });
+
+    document.getElementById('questions').style.display = selectedCompetencies.length > 0 ? 'block' : 'none';
+}
+function editQuestion(competencyValue, index) {
+    const newQuestion = prompt("Edit the question:", questions[competencyValue][index]);
+    if (newQuestion) {
+        questions[competencyValue][index] = newQuestion;
+        generateQuestions(); // Refresh the questions list
+    }
+}
+
+function deleteQuestion(competencyValue, index) {
+    if (confirm("Are you sure you want to delete this question?")) {
+        questions[competencyValue].splice(index, 1);
+        generateQuestions(); // Refresh the questions list
+    }
+}
+function addNewQuestion(competencyValue, textarea) {
+    const newQuestion = textarea.value;
+    if (newQuestion) {
+        questions[competencyValue].push(newQuestion);
+        textarea.value = ''; // Clear the textarea
+        generateQuestions(); // Refresh the questions list
+    }
+}
+
+function addCommitteeMember() {
+    const form = document.getElementById('committeeForm');
+    const committeeName = form.elements['committeeName'].value;
+    const committeeCompetencies = Array.from(form.elements['committeeCompetency'].selectedOptions).map(option => option.value);
+    const formattedCompetencies = committeeCompetencies.map(competency => {
+        const formatted = formatCompetencyName(competency);
+        return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    }).join(', ');
+    const committeeTableBody = document.getElementById('committee-table-body');
+    
+    const row = document.createElement('tr');
+    const cell1 = document.createElement('td');
+    const cell2 = document.createElement('td');
+    
+    cell1.textContent = committeeName;
+    cell2.textContent = formattedCompetencies;
+    
+    row.appendChild(cell1);
+    row.appendChild(cell2);
+    committeeTableBody.appendChild(row);
+    
+    form.reset();
+}
+
+        function resetCommitteeMembers() {
+            const committeeTableBody = document.getElementById('committee-table-body');
+            committeeTableBody.innerHTML = '';
+        }
+
+        async function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const lineHeight = 7;
+    const maxLineWidth = 170;
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 15;
+
+    function checkPageBreak(y, additionalHeight = 0) {
+        if (y + additionalHeight > pageHeight - margin) {
+            doc.addPage();
+            y = margin;
+        }
+        return y;
+    }
+
+    doc.setDrawColor(200, 200, 200); // Set draw color to grey
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Interview Kit', doc.internal.pageSize.getWidth() / 2, 20, null, null, 'center');
+
+    const currentDate = new Date().toLocaleDateString();
+    doc.setFontSize(10);
+    doc.text(currentDate, doc.internal.pageSize.getWidth() / 2, 25, null, null, 'center');
+    doc.setFontSize(12);
+    const positionTitle = document.getElementById('positionTitle').value;
+    const jobNumber = document.getElementById('jobNumber').value;
+    const jobLink = document.getElementById('jobLink').value;
+
+    let y = 40;
+
+    if (positionTitle) {
+        doc.text(`Position Title: ${positionTitle}`, 20, y);
+        y += 5;
+    }
+
+    if (jobNumber) {
+        doc.text(`Job Number: ${jobNumber}`, 20, y);
+        y += 5;
+    }
+
+    if (jobLink) {
+        doc.textWithLink (`[link]`, 20, y, { url: jobLink });
+        y += 5;
+    }
+
+    // Add a divider line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 190, y);
+    y += 10; // Add some space after the divider
+
+    const hiringManagerText = 'Hiring Managers to have both a Hiring Committee and Advisory Committee made up of 3-4 people on each committee. Here’s some insight to what that should look like:';
+    const hiringManagerLines = doc.splitTextToSize(hiringManagerText, maxLineWidth);
+    y = checkPageBreak(y, hiringManagerLines.length * lineHeight);
+    doc.text(hiringManagerLines, 20, y);
+    y += 8;
+
+    doc.autoTable({
+        startY: y,
+        head: [['', 'Hiring Committee', 'Advisory Committee/Stakeholders']],
+        body: [
+            ['Role', 'Central to the candidate selection process.', 'Comprises individuals who will closely interact with the new hire.'],
+            ['Focus', 'Creating a positive experience for all candidates and ensuring competency-based assessments.', 'Contributing insights and feedback based on specific focus areas.'],
+            ['Responsibilities', 'Recommends finalists, with the Hiring Manager making the final decision, backed by thorough rationale.', 'While their input is valuable, decision-making rests with the Hiring Committee to maintain process integrity and clarity.'],
+        ],
+    columnStyles: {
+        0: { cellWidth: 30 },  // Adjust the width of the first column
+        1: { cellWidth: 75 },  // Adjust the width of the second column
+        2: { cellWidth: 75 }   // Adjust the width of the third column
+    },
+        theme: 'grid',
+        styles: { cellPadding: 3, fontSize: 10, textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.1 },
+        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', lineColor: [0, 0, 0], lineWidth: 0.1 },
+        margin: { top: 10, right: 20, bottom: 10, left: 20 }
+    });
+
+    y = doc.lastAutoTable.finalY + 6;
+
+    const competencyText = 'Competencies: These are a combination of critical skills necessary for a candidate to be successful in the role. Interviews are structured around these competencies to collect evidence that supports (or not) the likelihood of success.';
+    const competencyLines = doc.splitTextToSize(competencyText, maxLineWidth);
+    y = checkPageBreak(y, competencyLines.length * lineHeight);
+    doc.text(competencyLines, 20, y);
+    y += competencyLines.length * lineHeight + 2;
+
+    const bulletPoints = [
+        '• Behavioral Competencies: These are behaviors that are critical for success in the role. They are HOW someone will operate in the role. Ex. communication, collaboration, customer focus.',
+        '• Functional Competencies: These are the functional and/or technical ("hard") skills. These are WHAT a candidate will do in the role. Ex. business development, accounting.'
+    ];
+
+    bulletPoints.forEach(point => {
+        const lines = doc.splitTextToSize(point, maxLineWidth);
+        y = checkPageBreak(y, lines.length * lineHeight);
+        doc.text(lines, 25, y);
+        y += lines.length * lineHeight + 2;
+    });
+
+    // Add a divider line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 190, y);
+    y += 10; // Add some space after the divider
+
+    y += 4;
+    doc.text('Selected Competencies:', 20, y);
+    y += 2;
+
+    const competencyRows = document.querySelectorAll('#competency-table tbody tr');
+    const competencyList = [];
+
+    competencyRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const competency = cells[0].textContent;
+        const description = cells[1].textContent;
+        competencyList.push([competency, description]);
+    });
+
+    const tableOptions = {
+        theme: 'grid',
+        styles: { cellPadding: 3, fontSize: 10, textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.1 },
+        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold', lineColor: [0, 0, 0], lineWidth: 0.1 },
+        margin: { top: 10, right: 20, bottom: 10, left: 20 }
+    };
+
+    doc.autoTable({
+        startY: y,
+        head: [['Competency', 'Description']],
+        body: competencyList,
+        ...tableOptions
+    });
+
+    y = doc.lastAutoTable.finalY + 10;
+    doc.text('Hiring Committee Members:', 20, y);
+
+    y += 3;
+    const committeeRows = document.querySelectorAll('#committee-table tbody tr');
+    const committeeMembers = [];
+
+    committeeRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const name = cells[0].textContent;
+        const competency = cells[1].textContent;
+        committeeMembers.push([name, competency]);
+    });
+
+    doc.autoTable({
+        startY: y,
+        head: [['Name', 'Competency']],
+        body: committeeMembers,
+        ...tableOptions
+    });
+
+    y = doc.lastAutoTable.finalY + 10;
+    doc.text('Interview Questions:', 20, y);
+
+    const selectedCompetencies = document.querySelectorAll('.competency-list input:checked');
+    selectedCompetencies.forEach(competency => {
+        const competencyValue = competency.value;
+        const formattedCompetency = formatCompetencyName(competencyValue);
+
+        y += 8;
+        y = checkPageBreak(y, lineHeight);
+        doc.setFont(undefined, 'bold');
+        doc.text(formattedCompetency.charAt(0).toUpperCase() + formattedCompetency.slice(1), 20, y);
+        y += lineHeight;
+        doc.setFont(undefined, 'normal');
+
+        const allQuestions = questions[competencyValue];
+        allQuestions.forEach(question => {
+            const lines = doc.splitTextToSize(`• ${question}`, maxLineWidth);
+            y = checkPageBreak(y, lines.length * lineHeight);
+            doc.text(lines, 22, y);
+            y += lines.length * lineHeight;
+        });
+    });
+
+    y += 5; // Ensure there is space after the interview questions
+
+    // Add a divider line
+    doc.setLineWidth(0.5);
+    doc.line(20, y, 190, y);
+    y += 10; // Add some space after the divider
+
+    const evaluationText = [
+        'Based on the candidate\'s response, use a scale of 1-5 to evaluate the candidate on each competency evaluated with:'
+    ];
+
+    evaluationText.forEach(line => {
+        const lines = doc.splitTextToSize(line, maxLineWidth);
+        y = checkPageBreak(y, lines.length * lineHeight);
+        doc.text(lines, 20, y);
+        y += lines.length * lineHeight;
+    });
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    const scaleText = [
+        '1 = Unable to determine or not applicable',
+        '2 = Below average (does not meet requirements)',
+        '3 = Competent (acceptable proficiency)',
+        '4 = Excellent (exceeds requirements)',
+        '5 = Outstanding (greatly exceeds requirements)'
+    ];
+
+    scaleText.forEach(line => {
+        const lines = doc.splitTextToSize(line, maxLineWidth);
+        y = checkPageBreak(y, lines.length * lineHeight);
+        doc.text(lines, 20, y);
+        y += lines.length * lineHeight;
+    });
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    const accommodationText = [
+        'Please note the University offers reasonable accommodations to qualified candidates. If a candidate asks for an accommodation or about the process, contact your recruiter or HR business partner.'
+    ];
+
+    accommodationText.forEach(line => {
+        const lines = doc.splitTextToSize(line, maxLineWidth);
+        y = checkPageBreak(y, lines.length * lineHeight);
+        doc.text(lines, 20, y);
+        y += lines.length * lineHeight;
+    });
+
+    // Gather selected competencies
+    const selectedCompetencyElements = document.querySelectorAll('.competency-list input:checked');
+    const selectedCompetencyNames = Array.from(selectedCompetencyElements).map(competency => competency.nextSibling.nodeValue.trim());
+
+    // Create table rows for each competency
+    const tableBody = selectedCompetencyNames.map(name => [name, '', '']);
+
+    y += 5; // Add some space before the table
+    doc.autoTable({
+        startY: y,
+        head: [['Competency', 'Rating (1-5)', 'Notes']],
+        body: tableBody,
+        ...tableOptions,
+
+        columnStyles: {
+            0: { cellWidth: 30 }, // Competency column
+            1: { cellWidth: 20 }, // Rating (1-5) column
+            2: { cellWidth: 115 }  // Comments column
+        }
+    });
+
+    doc.save('Interview_Kit.pdf');
+}
+
+
+    </script>
+</body>
+</html>
